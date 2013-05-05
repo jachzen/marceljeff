@@ -44,10 +44,10 @@ public class Draft_75 extends Draft {
 	private boolean inframe = false;
 	protected List<Framedata> readyframes = new LinkedList<Framedata>();
 	protected ByteBuffer currentFrame;
-	
-	
+
+
 	private final Random reuseableRandom = new Random();
-	
+
 
 	@Override
 	public HandshakeState acceptHandshakeAsClient( ClientHandshake request, ServerHandshake response ) {
@@ -117,7 +117,7 @@ public class Draft_75 extends Draft {
 		response.put( "WebSocket-Origin", request.getFieldValue( "Origin" ) );
 		String location = "ws://" + request.getFieldValue( "Host" ) + request.getResourceDescriptor();
 		response.put( "WebSocket-Location", location );
-		// TODO handle Sec-WebSocket-Protocol and Set-Cookie
+		// T ODO handle Sec-WebSocket-Protocol and Set-Cookie
 		return response;
 	}
 
@@ -145,7 +145,7 @@ public class Draft_75 extends Draft {
 				}
 				readingState = false;
 				inframe = false;
-			} else if( readingState ) { // Regular frame data, add to current frame buffer //TODO This code is very expensive and slow
+			} else if( readingState ) { // Regular frame data, add to current frame buffer //T ODO This code is very expensive and slow
 				if( currentFrame == null ) {
 					currentFrame = createBuffer();
 				} else if( !currentFrame.hasRemaining() ) {

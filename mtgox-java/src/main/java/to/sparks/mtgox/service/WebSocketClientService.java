@@ -51,13 +51,13 @@ class WebsocketClientService implements Runnable, MtGoxWebsocketClient, Applicat
 
     private final static String SOCKET_IO_SERVER =  "http://socketio.mtgox.com/mtgox";// "http://socketio-beta.mtgox.com/mtgox"; // "http://socketio.mtgox.com/mtgox";
     private ApplicationEventPublisher applicationEventPublisher = null;
-    private Logger logger;
+    private final Logger logger;
 //    private BaseWebSocketClient websocket;
     SocketIO socket;
-    private SimpleAsyncTaskExecutor taskExecutor;
-    private Map<String, CurrencyInfo> currencyCache;
-    private HTTPClientV1Service httpAPIV1;
-    private SocketListener socketListener;
+    private final SimpleAsyncTaskExecutor taskExecutor;
+    private final Map<String, CurrencyInfo> currencyCache;
+    private final HTTPClientV1Service httpAPIV1;
+    private final SocketListener socketListener;
     // private ReliabilityOptions reliability;
 
     public WebsocketClientService(Logger logger, SimpleAsyncTaskExecutor taskExecutor, HTTPClientV1Service httpAPIV1, SocketListener socketListener) {
@@ -217,7 +217,7 @@ class WebsocketClientService implements Runnable, MtGoxWebsocketClient, Applicat
                 // logger.log(Level.INFO, "messageType: {0}, payload: {1}", new Object[]{messageType, dataPayload});
             } else {
                 logger.log(Level.WARNING, "Unknown operation: {0}, payload: {1}", new Object[]{op.get("op"), op.toString()});
-                // TODO:  Process the following types
+                // T ODO:  Process the following types
                 // subscribe
                 // unsubscribe
                 // remark

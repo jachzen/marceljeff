@@ -40,7 +40,7 @@ import org.java_websocket.util.Charsetfunctions;
  * Represents one end (client or server) of a single WebSocketImpl connection.
  * Takes care of the "handshake" phase, then allows for easy sending of
  * text frames, and receiving frames through an event-based model.
- * 
+ *
  */
 public class WebSocketImpl implements WebSocket {
 
@@ -72,7 +72,7 @@ public class WebSocketImpl implements WebSocket {
 	/**
 	 * Helper variable meant to store the thread which ( exclusively ) triggers this objects decode method.
 	 **/
-	public volatile WebSocketWorker workerThread; // TODO reset worker?
+	public volatile WebSocketWorker workerThread; // T ODO reset worker?
 
 	/** When true no further frames may be submitted to be sent */
 	private volatile boolean flushandclosestate = false;
@@ -118,7 +118,7 @@ public class WebSocketImpl implements WebSocket {
 
 	/**
 	 * crates a websocket with client role
-	 * 
+	 *
 	 * @param socket
 	 *            may be unbound
 	 */
@@ -144,7 +144,7 @@ public class WebSocketImpl implements WebSocket {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void decode( ByteBuffer socketBuffer ) {
 		if( !socketBuffer.hasRemaining() || flushandclosestate )
@@ -431,7 +431,7 @@ public class WebSocketImpl implements WebSocket {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param remote
 	 *            Indicates who "generated" <code>code</code>.<br>
 	 *            <code>true</code> means that this endpoint received the <code>code</code> from the other endpoint.<br>
@@ -477,7 +477,8 @@ public class WebSocketImpl implements WebSocket {
 		closeConnection( closecode, closemessage, closedremotely );
 	}
 
-	public void closeConnection( int code, String message ) {
+	@Override
+    public void closeConnection( int code, String message ) {
 		closeConnection( code, message, false );
 	}
 
@@ -530,7 +531,7 @@ public class WebSocketImpl implements WebSocket {
 
 	/**
 	 * Send Text data to the other end.
-	 * 
+	 *
 	 * @throws IllegalArgumentException
 	 * @throws NotYetConnectedException
 	 */
@@ -543,7 +544,7 @@ public class WebSocketImpl implements WebSocket {
 
 	/**
 	 * Send Binary data (plain bytes) to the other end.
-	 * 
+	 *
 	 * @throws IllegalArgumentException
 	 * @throws NotYetConnectedException
 	 */
