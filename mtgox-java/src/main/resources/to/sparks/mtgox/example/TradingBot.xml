@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="file:mtgox.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+    </bean>
+
+    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor">
+        <property name="concurrencyLimit">
+            <util:constant static-field="org.springframework.core.task.SimpleAsyncTaskExecutor.NO_CONCURRENCY" />
+        </property>
+    </bean>
+
+    <bean id="logger" class="java.util.logging.Logger"
+          scope="prototype" factory-method="getGlobal" >
+        <property name="level">
+            <util:constant static-field="java.util.logging.Level.ALL"/>
+        </property>
+    </bean>
+
+    <bean id="httpApiV0" class="to.sparks.mtgox.service.HTTPClientV0Service" >
+        <constructor-arg index="0">
+            <ref bean="logger"/>
+        </constructor-arg>
+        <constructor-arg index="1" value="${apikey}" />
+        <constructor-arg index="2" value="${apisecret}" />
+    </bean>
+
+    <bean id="httpApiV1" class="to.sparks.mtgox.service.HTTPClientV1Service" >
+        <constructor-arg index="0">
+            <ref bean="logger"/>
+        </constructor-arg>
+        <constructor-arg index="1" value="${apikey}" />
+        <constructor-arg index="2" value="${apisecret}" />
+    </bean>
+
+    <bean id="usdCurrency" class="java.util.Currency"
+          scope="prototype" factory-method="getInstance" >
+        <constructor-arg index="0" value="USD" />
+    </bean>
+
+    <bean id="mtgoxUSD" class="to.sparks.mtgox.service.APIService">
+        <constructor-arg index="0">
+            <ref bean="logger"/>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <ref bean="httpApiV0"/>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <ref bean="httpApiV1"/>
+        </constructor-arg>
+        <constructor-arg index="3">
+            <ref bean="usdCurrency"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="socketListener" class="to.sparks.mtgox.service.SocketListener">
+        <constructor-arg index="0">
+            <ref bean="logger"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="wsApi" class="to.sparks.mtgox.service.WebsocketClientService" init-method="init" destroy-method="destroy">
+        <constructor-arg index="0">
+            <ref bean="logger"/>
+        </constructor-arg>
+        <constructor-arg index="1" >
+            <ref bean="taskExecutor"/>
+        </constructor-arg>
+        <constructor-arg index="2" >
+            <ref bean="httpApiV1"/>
+        </constructor-arg>
+        <constructor-arg index="3" >
+            <ref bean="socketListener"/>
+        </constructor-arg>
+        <constructor-arg index="4" value="false"/>        
+    </bean>
+
+    <bean id='tradingBot' class='to.sparks.mtgox.example.TradingBot' >
+        <constructor-arg index="0" >
+            <ref bean="taskExecutor"/>
+        </constructor-arg>
+        <constructor-arg index="1" >
+            <ref bean="mtgoxUSD"/>
+        </constructor-arg>
+    </bean>
+
+</beans>
