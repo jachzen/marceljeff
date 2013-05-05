@@ -48,7 +48,7 @@ public class SocketChannelIOHelper {
 				}
 			}
 		} else {
-			do {// FIXME writing as much as possible is unfair!!
+			do {// F IXME writing as much as possible is unfair!!
 				/*int written = */sockchannel.write( buffer );
 				if( buffer.remaining() > 0 ) {
 					return false;

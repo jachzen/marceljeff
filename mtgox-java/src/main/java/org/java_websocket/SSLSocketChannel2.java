@@ -187,7 +187,8 @@ public class SSLSocketChannel2 implements ByteChannel, WrappedByteChannel {
 		outCrypt.flip();
 	}
 
-	public int write( ByteBuffer src ) throws IOException {
+	@Override
+    public int write( ByteBuffer src ) throws IOException {
 		if( !isHandShakeComplete() ) {
 			processHandshake();
 			return 0;
@@ -201,7 +202,8 @@ public class SSLSocketChannel2 implements ByteChannel, WrappedByteChannel {
 	 * Blocks when in blocking mode until at least one byte has been decoded.<br>
 	 * When not in blocking mode 0 may be returned.
 	 **/
-	public int read( ByteBuffer dst ) throws IOException {
+	@Override
+    public int read( ByteBuffer dst ) throws IOException {
 		if( !dst.hasRemaining() )
 			return 0;
 		if( !isHandShakeComplete() ) {
@@ -263,11 +265,12 @@ public class SSLSocketChannel2 implements ByteChannel, WrappedByteChannel {
 		return socketChannel.isConnected();
 	}
 
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		sslEngine.closeOutbound();
 		sslEngine.getSession().invalidate();
 		if( socketChannel.isOpen() )
-			socketChannel.write( wrap( emptybuffer ) );// FIXME what if not all bytes can be written
+			socketChannel.write( wrap( emptybuffer ) );// F IXME what if not all bytes can be written
 		socketChannel.close();
 	}
 
@@ -325,7 +328,7 @@ public class SSLSocketChannel2 implements ByteChannel, WrappedByteChannel {
 		int fremain = from.remaining();
 		int toremain = to.remaining();
 		if( fremain > toremain ) {
-			// FIXME there should be a more efficient transfer method
+			// F IXME there should be a more efficient transfer method
 			int limit = Math.min( fremain, toremain );
 			for( int i = 0 ; i < limit ; i++ ) {
 				to.put( from.get() );
