@@ -8,6 +8,9 @@ public class Simulate {
             for (String file : IConfiguration.DATABASES) {
                 database.addDatabaseFile(new File(file));
             }
+            IExchange exchange = (IExchange) IConfiguration.EXCHANGE_CLASS.getConstructor().newInstance();
+            IAlgorithm algorithm = (IAlgorithm) IConfiguration.ALGORITHM_CLASS.getConstructor().newInstance();
+            new Engine().run(database, exchange, algorithm);
         } catch (Exception e) {
             e.printStackTrace();
         }
