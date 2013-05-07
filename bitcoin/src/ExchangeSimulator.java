@@ -1,5 +1,16 @@
 
+
+/**
+ * Analysis of mtgox:
+ *  - marketorders (buy/sell at marketprice) execute immediately, therefore we do a very simple simulator in the first step
+ *  - needs more analysis to make other orders (perhaps add to ordertype(marketorder/normalorder))
+ * 
+ * @author mpater
+ *
+ */
 public class ExchangeSimulator implements IExchange {
+
+	private Wallet wallet = new Wallet(IConfiguration.BALANCE);
 
     @Override
     public double getCurrentPrice() {
@@ -7,13 +18,19 @@ public class ExchangeSimulator implements IExchange {
     }
 
     @Override
-    public Order placeBuyOrder() {
-        return null;
+	public Order placeBuyOrder(NormalOrder order) {
+		//immediate transaction
+		wallet.withdraw(order.getPrice() + (IConfiguration.FEE_PERCENTAGE * order.getPrice()));
+		order.setState(Order.State.DONE);
+		return order;
     }
 
     @Override
-    public Order placeSellOrder() {
-        return null;
+	public Order placeSellOrder(NormalOrder order) {
+		//immediate transaction
+		wallet.deposit(order.getPrice());
+		order.setState(Order.State.DONE);
+		return order;
     }
 
     @Override
@@ -24,4 +41,25 @@ public class ExchangeSimulator implements IExchange {
     @Override
     public void cancelOrder(Order order) {
     }
+
+	@Override
+	public Wallet getWallet() {
+		return wallet;
+	}
+
+	@Override
+	public Order placeBuyOrder(MarketOrder order) {
+		//immediate transaction
+		wallet.withdraw(getCurrentPrice() + (IConfiguration.FEE_PERCENTAGE * getCurrentPrice()));
+		order.setState(Order.State.DONE);
+		return order;
+	}
+
+	@Override
+	public Order placeSellOrder(MarketOrder order) {
+		//immediate transaction
+		wallet.deposit(getCurrentPrice());
+		order.setState(Order.State.DONE);
+		return order;
+	}
 }

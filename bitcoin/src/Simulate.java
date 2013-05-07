@@ -10,7 +10,8 @@ public class Simulate {
             }
             IExchange exchange = (IExchange) IConfiguration.EXCHANGE_CLASS.getConstructor().newInstance();
             IAlgorithm algorithm = (IAlgorithm) IConfiguration.ALGORITHM_CLASS.getConstructor().newInstance();
-            new Engine().run(database, exchange, algorithm);
+			IEngine engine = (IEngine) IConfiguration.ENGINE_CLASS.getConstructor().newInstance();
+			engine.run(database, exchange, algorithm);
         } catch (Exception e) {
             e.printStackTrace();
         }
