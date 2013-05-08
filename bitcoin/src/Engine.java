@@ -1,4 +1,4 @@
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class Engine implements IEngine {
 	private Logger logger = Logger.getLogger(Engine.class.getName());
