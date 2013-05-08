@@ -5,9 +5,9 @@
 public interface IExchange {
 
     /**
-     * Returns the latest price. (Should this be instead getLastTransaction()?)
-     */
-    double getCurrentPrice();
+	 * Returns the latest price and Volume.
+	 */
+	Transaction getTicker();
 
     /**
      * Places a buy order and returns an object representing the placed order.

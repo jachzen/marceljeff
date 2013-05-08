@@ -1,4 +1,5 @@
-
+import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * Analysis of mtgox:
@@ -10,15 +11,22 @@
  */
 public class ExchangeSimulator implements IExchange {
 
+	private Logger logger = Logger.getLogger(ExchangeSimulator.class.getName());
+
+	private double x;
 	private Wallet wallet = new Wallet(IConfiguration.BALANCE);
 
     @Override
-    public double getCurrentPrice() {
-        return 0;
+	//TODO get from Database?
+    public Transaction getTicker() {
+		Transaction t = new Transaction(new Date(), Math.sin(x) + 1, x);
+    	x++;
+		return t;
     }
 
     @Override
 	public Order placeBuyOrder(NormalOrder order) {
+		logger.info("Put buy order " + order);
 		//immediate transaction
 		wallet.withdraw(order.getPrice() + (IConfiguration.FEE_PERCENTAGE * order.getPrice()));
 		order.setState(Order.State.DONE);
@@ -27,6 +35,7 @@ public class ExchangeSimulator implements IExchange {
 
     @Override
 	public Order placeSellOrder(NormalOrder order) {
+		logger.info("Put sell order " + order);
 		//immediate transaction
 		wallet.deposit(order.getPrice());
 		order.setState(Order.State.DONE);
@@ -35,11 +44,12 @@ public class ExchangeSimulator implements IExchange {
 
     @Override
     public Order getCurrentOrder() {
-        return null;
+		return new NoOrder();
     }
 
     @Override
     public void cancelOrder(Order order) {
+		logger.info("Cancell order " + order);
     }
 
 	@Override
@@ -49,16 +59,18 @@ public class ExchangeSimulator implements IExchange {
 
 	@Override
 	public Order placeBuyOrder(MarketOrder order) {
+		logger.info("Put buy order " + order);
 		//immediate transaction
-		wallet.withdraw(getCurrentPrice() + (IConfiguration.FEE_PERCENTAGE * getCurrentPrice()));
+		wallet.withdraw(getTicker().getPrice() + (IConfiguration.FEE_PERCENTAGE * getTicker().getPrice()));
 		order.setState(Order.State.DONE);
 		return order;
 	}
 
 	@Override
 	public Order placeSellOrder(MarketOrder order) {
+		logger.info("Put sell order " + order);
 		//immediate transaction
-		wallet.deposit(getCurrentPrice());
+		wallet.deposit(getTicker().getPrice());
 		order.setState(Order.State.DONE);
 		return order;
 	}

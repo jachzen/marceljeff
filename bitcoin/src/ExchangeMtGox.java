@@ -1,11 +1,6 @@
 public class ExchangeMtGox implements IExchange {
 
     @Override
-    public double getCurrentPrice() {
-        return 0;
-    }
-
-    @Override
     public Order getCurrentOrder() {
         return null;
     }
@@ -39,6 +34,12 @@ public class ExchangeMtGox implements IExchange {
 
 	@Override
 	public Order placeSellOrder(MarketOrder order) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Transaction getTicker() {
 		// TODO Auto-generated method stub
 		return null;
 	}

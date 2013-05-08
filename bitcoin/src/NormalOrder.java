@@ -14,4 +14,9 @@ public class NormalOrder extends Order{
 		this.price = price;
 	}
 
+	@Override
+	public String toString() {
+		return "NormalOrder [price=" + price + "]" + super.toString();
+	}
+
 }

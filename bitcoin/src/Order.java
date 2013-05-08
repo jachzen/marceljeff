@@ -2,13 +2,13 @@
 /**
  * Represents a buy or sell order that has been placed.
  */
-public class Order {
+public abstract class Order {
 
 	public enum State {
 		OPEN, PENDING, DONE
 	}
 
-	private OrderType orderType;
+	private OrderType orderType = OrderType.DO_NOTHING;;
 	private State state = State.DONE;
 
 	public OrderType getOrderType() {

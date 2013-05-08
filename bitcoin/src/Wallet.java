@@ -28,4 +28,9 @@ public class Wallet {
 		balance += amount;
 		return balance;
 	}
+
+	@Override
+	public String toString() {
+		return "Wallet [balance=" + balance + ", getBalance()=" + getBalance() + "]";
+	}
 }
