@@ -4,6 +4,11 @@
 public interface IAlgorithm {
 
     /**
+     * Prime the algorithm with initial values.
+     */
+    void setInitialTransaction(Transaction transaction);
+
+    /**
      * Adds the specified transaction to the algorithm's processing. Every
      * transaction that occurs must be added.
      *

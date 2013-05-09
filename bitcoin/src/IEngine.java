@@ -6,5 +6,5 @@
  *
  */
 public interface IEngine {
-	void run(Database database, IExchange exchange, IAlgorithm algorithm);
+	void run(IExchange exchange, IAlgorithm algorithm);
 }

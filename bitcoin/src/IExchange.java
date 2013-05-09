@@ -5,35 +5,35 @@
 public interface IExchange {
 
     /**
-	 * Returns the latest price and Volume.
-	 */
-	Transaction getTicker();
+     * Returns the latest transaction.
+     */
+    Transaction getTicker();
 
     /**
      * Places a buy order and returns an object representing the placed order.
      * The order is not carried out immediately; use getCurrentOrder() to find
      * out if the order has been filled.
      */
-	Order placeBuyOrder(NormalOrder order);
+    Order placeBuyOrder(NormalOrder order);
 
     /**
      * Places a sell order and returns an object representing the placed order.
      * The order is not carried out immediately; use getCurrentOrder() to find
      * out if the order has been filled.
      */
-	Order placeSellOrder(NormalOrder order);
+    Order placeSellOrder(NormalOrder order);
 
-	/**
-	 * Places a buy order and returns an object representing the placed order.
-	 * This order is carried out immediately.
-	 */
-	Order placeBuyOrder(MarketOrder order);
+    /**
+     * Places a buy order and returns an object representing the placed order.
+     * This order is carried out immediately.
+     */
+    Order placeBuyOrder(MarketOrder order);
 
-	/**
-	 * Places a sell order and returns an object representing the placed order.
-	 * This order is carried out immediately.
-	 */
-	Order placeSellOrder(MarketOrder order);
+    /**
+     * Places a sell order and returns an object representing the placed order.
+     * This order is carried out immediately.
+     */
+    Order placeSellOrder(MarketOrder order);
 
     /**
      * Returns the current order, or null if there is no current order (ie the
@@ -43,13 +43,13 @@ public interface IExchange {
     Order getCurrentOrder();
 
     /**
-     * Cancel the specified order.
+     * Cancels the specified order, returns NoOrder.
      */
-    void cancelOrder(Order order);
+    Order cancelOrder(Order order);
 
-	/**
-	 * Get Walletinfo
-	 */
-	Wallet getWallet();
+    /**
+     * Get Walletinfo
+     */
+    Wallet getWallet();
 
 }

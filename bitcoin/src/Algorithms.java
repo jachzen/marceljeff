@@ -35,6 +35,24 @@ public class Algorithms {
     }
 
     /**
+     * Returns the next value of an exponential moving average, specifying how
+     * much time has elapsed since the last calculation.
+     *
+     * @param currentAverage
+     *        The existing moving average value.
+     * @param newValue
+     *        The new value to shift the average with.
+     * @param halfLife
+     *        The half-life of the moving average, in the same units as time.
+     * @param time
+     *        The time since the last update, in the same units as halfLife.
+     * @return The next value of the moving average.
+     */
+    public static double nextMovingAverageScaled(double currentAverage, double newValue, double halfLife, double time) {
+        return nextMovingAverage(currentAverage, newValue, 1.0 - Math.pow(1.0 - 2.0 / (2.9 * halfLife + 1), time));
+    }
+
+    /**
      * Returns linear interpolation between two points.
      */
     public static double getLinearInterpolation(double x0, double x1, double y0, double y1, double x) {

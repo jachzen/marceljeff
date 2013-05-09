@@ -23,9 +23,11 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return String.format("{date=%s, price=EUR%.2f, volume=%.2f}", new SimpleDateFormat("dd.MM.yyyy@HH:mm:ss").format(getDate()), getPrice(), getVolume());
+        return String.format("{date=%s, price=EUR%.2f, volume=%.2f}", DATE_FORMAT.format(getDate()), getPrice(),
+            getVolume());
     }
 
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private final Date date_;
     private final double price_;
     private final double volume_;

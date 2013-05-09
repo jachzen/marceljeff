@@ -25,7 +25,7 @@ public class Database {
                 if (row == null) {
                     break;
                 }
-                Date date = new Date(Long.parseLong(row.get(0).trim())*1000);
+                Date date = new Date(Long.parseLong(row.get(0).trim()) * 1000);
                 double price = Double.parseDouble(row.get(1).trim());
                 double volume = Double.parseDouble(row.get(2).trim());
                 Transaction transaction = new Transaction(date, price, volume);
@@ -53,12 +53,12 @@ public class Database {
         });
     }
 
-
     @Override
     public String toString() {
-        return "{transactions=" + getTransactions() + "}";
+        return String.format("{size=%d, first=%s, last=%s}", transactions_.size(),
+            Transaction.DATE_FORMAT.format(transactions_.get(0).getDate()),
+            Transaction.DATE_FORMAT.format(transactions_.get(transactions_.size() - 1).getDate()));
     }
-
 
     private final ArrayList<Transaction> transactions_ = new ArrayList<Transaction>();
 }
