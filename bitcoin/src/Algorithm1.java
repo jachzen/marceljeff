@@ -1,3 +1,6 @@
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * This first algorithm is just for software testing purposes.
  */
@@ -11,7 +14,12 @@ public class Algorithm1 implements IAlgorithm {
     }
 
     @Override
-    public OrderType addTransaction(Transaction transaction) {
+    public void setDebugFile(FileWriter writer) {
+        writer_ = writer;
+    }
+
+    @Override
+    public OrderType addTransaction(Transaction transaction) throws IOException {
 
         /* Calculate time since last transaction and the new moving average
          * price. */
@@ -31,15 +39,14 @@ public class Algorithm1 implements IAlgorithm {
         }
 
         /* Output data for playing with in a spreadsheet, if you want this. */
-        // long days = transaction.getDate().getTime() / 1000 / 60 / 60 / 24;
-        // long previousDays = previousTransaction_.getDate().getTime() / 1000 /
-        // 60 / 60 / 24;
-        // if (days != previousDays) {
-        // int x = orderType_ == OrderType.BUY ? 50 : (orderType_ ==
-        // OrderType.SELL ? 0 : 25);
-        // System.out.println(String.format("%f,%f,%d", transaction.getPrice(),
-        // averagePrice, x));
-        // }
+        if (writer_ != null) {
+            long days = transaction.getDate().getTime() / 1000 / 60 / 60 / 24;
+            long previousDays = previousTransaction_.getDate().getTime() / 1000 / 60 / 60 / 24;
+            if (days != previousDays) {
+                int x = orderType_ == OrderType.BUY ? 50 : (orderType_ == OrderType.SELL ? 0 : 25);
+                writer_.write(String.format("%d,%f,%f,%d\n", days, transaction.getPrice(), averagePrice, x));
+            }
+        }
 
         /* Store values for next call. */
         previousAveragePrice_ = averagePrice;
@@ -52,4 +59,5 @@ public class Algorithm1 implements IAlgorithm {
     double previousAveragePrice_ = 0;
     Transaction previousTransaction_;
     OrderType orderType_;
+    FileWriter writer_ = null;
 }

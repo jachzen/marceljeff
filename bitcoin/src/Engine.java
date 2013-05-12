@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 public class Engine implements IEngine {
@@ -26,7 +28,12 @@ public class Engine implements IEngine {
         while (true) {
             // TODO we can poll the ticker. perhaps rename it?
             Transaction lastTicker = exchange.getTicker();
-            OrderType intend = algorithm.addTransaction(lastTicker);
+            OrderType intend = OrderType.DO_NOTHING;
+            try {
+                intend = algorithm.addTransaction(lastTicker);
+            } catch (IOException e) {
+                logger.error(e.toString());
+            }
 
             Order currentOrder = exchange.getCurrentOrder();
 

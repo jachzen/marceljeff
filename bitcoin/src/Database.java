@@ -15,20 +15,27 @@ import org.supercsv.prefs.CsvPreference;
  */
 public class Database {
 
-    public void addDatabaseFile(File databaseFile) throws IOException {
+    @SuppressWarnings("unused")
+    public int addDatabaseFile(File databaseFile) throws IOException {
 
+        int lineCount = 0;
         CsvListReader csvReader = new CsvListReader(new FileReader(databaseFile), CsvPreference.STANDARD_PREFERENCE);
         try {
             List<String> row = csvReader.read();
-            for (;;) {
+            for (;;lineCount++) {
                 row = csvReader.read();
                 if (row == null) {
                     break;
                 }
                 Date date = new Date(Long.parseLong(row.get(0).trim()) * 1000);
-                double price = Double.parseDouble(row.get(1).trim());
-                double volume = Double.parseDouble(row.get(2).trim());
-                Transaction transaction = new Transaction(date, price, volume);
+                double open = Double.parseDouble(row.get(1).trim());
+                double high = Double.parseDouble(row.get(2).trim());
+                double low = Double.parseDouble(row.get(3).trim());
+                double close = Double.parseDouble(row.get(4).trim());
+                double volumeBtc = Double.parseDouble(row.get(5).trim());
+                double volumeEur = Double.parseDouble(row.get(6).trim());
+                double weightedPrice = Double.parseDouble(row.get(7).trim());
+                Transaction transaction = new Transaction(date, weightedPrice);
                 transactions_.add(transaction);
             }
         } finally {
@@ -38,6 +45,8 @@ public class Database {
         /* Sort the transactions by date, such that the first transaction is the
          * list is earliest in history. */
         sortTransactionsByDate();
+
+        return lineCount;
     }
 
     public ArrayList<Transaction> getTransactions() {

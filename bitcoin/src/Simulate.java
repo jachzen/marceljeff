@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
@@ -10,7 +12,8 @@ public class Simulate {
         try {
             for (String file : IConfiguration.DATABASES) {
                 logger.info(String.format("Loading database from: \"%s\"", file));
-                database.addDatabaseFile(new File(file));
+                int lineCount = database.addDatabaseFile(new File(file));
+                logger.info(String.format("(%d lines)", lineCount));
             }
 
             logger.info(String.format("Constructing exchange class: \"%s\"",
@@ -21,6 +24,14 @@ public class Simulate {
             logger.info(String.format("Constructing algorithm class: \"%s\"",
                 IConfiguration.EXCHANGE_CLASS.getSimpleName()));
             IAlgorithm algorithm = (IAlgorithm) IConfiguration.ALGORITHM_CLASS.getConstructor().newInstance();
+            if (IConfiguration.ALGORITHM_OUTPUT != null) {
+                try {
+                    FileWriter writer = new FileWriter(new File(IConfiguration.ALGORITHM_OUTPUT));
+                    algorithm.setDebugFile(writer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             logger.info(String.format("Constructing engine class: \"%s\"",
                 IConfiguration.EXCHANGE_CLASS.getSimpleName()));
