@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Algorithm1 implements IAlgorithm {
 
     @Override
-    public void setInitialTransaction(Transaction transaction) {
+    public void setInitialTransaction(Ticker transaction) {
         previousTransaction_ = transaction;
         previousAveragePrice_ = transaction.getPrice();
         orderType_ = OrderType.DO_NOTHING;
@@ -19,8 +19,7 @@ public class Algorithm1 implements IAlgorithm {
     }
 
     @Override
-    public OrderType addTransaction(Transaction transaction) throws IOException {
-
+	public OrderType addTransaction(Ticker transaction) throws IOException {
         /* Calculate time since last transaction and the new moving average
          * price. */
         double time = transaction.getDate().getTime() / (1000.0 * 60.0) - previousTransaction_.getDate().getTime()
@@ -57,7 +56,7 @@ public class Algorithm1 implements IAlgorithm {
 
     double HALF_LIFE = 24 * 60; // minutes
     double previousAveragePrice_ = 0;
-    Transaction previousTransaction_;
+    Ticker previousTransaction_;
     OrderType orderType_;
     FileWriter writer_ = null;
 }

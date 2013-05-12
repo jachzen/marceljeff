@@ -20,9 +20,9 @@
     <bean id="logger" class="to.sparks.mtgox.Logger">
     </bean>
 
-    <bean id="usdCurrency" class="java.util.Currency"
+    <bean id="eurCurrency" class="java.util.Currency"
           scope="prototype" factory-method="getInstance" >
-        <constructor-arg index="0" value="USD" />
+        <constructor-arg index="0" value="EUR" />
     </bean>
 
     <!--
@@ -48,7 +48,7 @@
         <constructor-arg index="2" value="${apisecret}" />
     </bean>
 
-    <bean id="mtgoxUSD" class="to.sparks.mtgox.service.APIService">
+    <bean id="mtgoxEUR" class="to.sparks.mtgox.service.APIService">
         <constructor-arg index="0">
             <ref bean="logger"/>
         </constructor-arg>
@@ -59,7 +59,7 @@
             <ref bean="httpApiV1"/>
         </constructor-arg>
         <constructor-arg index="3">
-            <ref bean="usdCurrency"/>
+            <ref bean="eurCurrency"/>
         </constructor-arg>
     </bean>
 

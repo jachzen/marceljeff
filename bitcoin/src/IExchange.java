@@ -1,3 +1,4 @@
+
 /**
  * Represents an exchange, which may be for example MtGox, a simulator, or some
  * other exchange. Prices are always in Euro.
@@ -7,7 +8,7 @@ public interface IExchange {
     /**
      * Returns the latest transaction.
      */
-    Transaction getTicker();
+	Ticker getTicker();
 
     /**
      * Places a buy order and returns an object representing the placed order.
@@ -40,12 +41,12 @@ public interface IExchange {
      * last order has been filled). Currently, only one order at a time is
      * supported.
      */
-    Order getCurrentOrder();
+	Order getCurrentOrder();
 
     /**
      * Cancels the specified order, returns NoOrder.
      */
-    Order cancelOrder(Order order);
+	boolean cancelOrder(Order order);
 
     /**
      * Get Walletinfo

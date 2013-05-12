@@ -6,5 +6,5 @@
  *
  */
 public interface IEngine {
-	void run(IExchange exchange, IAlgorithm algorithm);
+	void run();
 }

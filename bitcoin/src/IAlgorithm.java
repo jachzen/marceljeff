@@ -9,7 +9,7 @@ public interface IAlgorithm {
     /**
      * Prime the algorithm with initial values.
      */
-    void setInitialTransaction(Transaction transaction);
+    void setInitialTransaction(Ticker transaction);
 
     /**
      * Optionally specify a debug output file.
@@ -24,5 +24,5 @@ public interface IAlgorithm {
      * @throws IOException
      *         When writing to the debug file fails.
      */
-    OrderType addTransaction(Transaction transaction) throws IOException;
+	OrderType addTransaction(Ticker ticker) throws IOException;
 }

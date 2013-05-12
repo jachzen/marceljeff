@@ -35,8 +35,8 @@ public class Database {
                 double volumeBtc = Double.parseDouble(row.get(5).trim());
                 double volumeEur = Double.parseDouble(row.get(6).trim());
                 double weightedPrice = Double.parseDouble(row.get(7).trim());
-                Transaction transaction = new Transaction(date, weightedPrice);
-                transactions_.add(transaction);
+				Ticker ticker = new Ticker(date, weightedPrice);
+				ticker_.add(ticker);
             }
         } finally {
             csvReader.close();
@@ -49,14 +49,14 @@ public class Database {
         return lineCount;
     }
 
-    public ArrayList<Transaction> getTransactions() {
-        return transactions_;
+	public ArrayList<Ticker> getTransactions() {
+        return ticker_;
     }
 
     private void sortTransactionsByDate() {
-        Collections.sort(transactions_, new Comparator<Transaction>() {
+		Collections.sort(ticker_, new Comparator<Ticker>() {
             @Override
-            public int compare(Transaction o1, Transaction o2) {
+			public int compare(Ticker o1, Ticker o2) {
                 return (o2.getDate().after(o1.getDate()) ? -1 : (o1.getDate().after(o2.getDate()) ? 1 : 0));
             }
         });
@@ -64,10 +64,9 @@ public class Database {
 
     @Override
     public String toString() {
-        return String.format("{size=%d, first=%s, last=%s}", transactions_.size(),
-            Transaction.DATE_FORMAT.format(transactions_.get(0).getDate()),
-            Transaction.DATE_FORMAT.format(transactions_.get(transactions_.size() - 1).getDate()));
+        return String.format("{size=%d, first=%s, last=%s}", ticker_.size(),
+ Ticker.DATE_FORMAT.format(ticker_.get(0).getDate()), Ticker.DATE_FORMAT.format(ticker_.get(ticker_.size() - 1).getDate()));
     }
 
-    private final ArrayList<Transaction> transactions_ = new ArrayList<Transaction>();
+	private final ArrayList<Ticker> ticker_ = new ArrayList<Ticker>();
 }

@@ -8,8 +8,10 @@ public abstract class Order {
 		OPEN, PENDING, DONE
 	}
 
+	private String reference;
 	private OrderType orderType = OrderType.DO_NOTHING;;
 	private State state = State.DONE;
+	private double volume;
 
 	public OrderType getOrderType() {
 		return orderType;
@@ -25,6 +27,22 @@ public abstract class Order {
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	public String getReference() {
+		return reference;
+	}
+
+	public void setReference(String reference) {
+		this.reference = reference;
+	}
+
+	public double getVolume() {
+		return volume;
+	}
+
+	public void setVolume(double volume) {
+		this.volume = volume;
 	}
 
 }

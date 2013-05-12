@@ -17,12 +17,12 @@ public class Simulate {
             }
 
             logger.info(String.format("Constructing exchange class: \"%s\"",
-                IConfiguration.EXCHANGE_CLASS.getSimpleName()));
-            IExchange exchange = (IExchange) IConfiguration.EXCHANGE_CLASS.getConstructor(Database.class).newInstance(
+ IConfiguration.EXCHANGE_SIM_CLASS.getSimpleName()));
+			IExchange exchange = (IExchange) IConfiguration.EXCHANGE_SIM_CLASS.getConstructor(Database.class).newInstance(
                 database);
 
             logger.info(String.format("Constructing algorithm class: \"%s\"",
-                IConfiguration.EXCHANGE_CLASS.getSimpleName()));
+ IConfiguration.EXCHANGE_SIM_CLASS.getSimpleName()));
             IAlgorithm algorithm = (IAlgorithm) IConfiguration.ALGORITHM_CLASS.getConstructor().newInstance();
             if (IConfiguration.ALGORITHM_OUTPUT != null) {
                 try {
@@ -34,11 +34,12 @@ public class Simulate {
             }
 
             logger.info(String.format("Constructing engine class: \"%s\"",
-                IConfiguration.EXCHANGE_CLASS.getSimpleName()));
-            IEngine engine = (IEngine) IConfiguration.ENGINE_CLASS.getConstructor().newInstance();
+ IConfiguration.EXCHANGE_SIM_CLASS.getSimpleName()));
+			logger.info(String.format("Constructing engine class: \"%s\"", IConfiguration.EXCHANGE_REAL_CLASS.getSimpleName()));
+			final IEngine engine = (IEngine) IConfiguration.ENGINE_CLASS.getConstructor(IConfiguration.EXCHANGE_SIM_CLASS, IConfiguration.ALGORITHM_CLASS).newInstance(exchange, algorithm);
 
             logger.info("Runnng engine...");
-            engine.run(exchange, algorithm);
+			engine.run();
 
             logger.info("...done");
 

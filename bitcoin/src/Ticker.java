@@ -1,9 +1,9 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Transaction {
+public class Ticker {
 
-    Transaction(Date date, double price) {
+	Ticker(Date date, double price) {
         date_ = date;
         price_ = price;
     }
@@ -18,7 +18,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return String.format("{date=%s, price=EUR%.2f, volume=%.2f}", DATE_FORMAT.format(getDate()), getPrice());
+		return String.format("{date=%s, price=EUR%.2f}", DATE_FORMAT.format(getDate()), getPrice());
     }
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

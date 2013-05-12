@@ -25,8 +25,9 @@ public class ExchangeSimulator implements IExchange {
     }
 
     @Override
-    public Transaction getTicker() {
-        return database_.getTransactions().get(x);
+	public Ticker getTicker() {
+		Ticker t = database_.getTransactions().get(x);
+		return t;
     }
 
     /**
@@ -50,7 +51,7 @@ public class ExchangeSimulator implements IExchange {
             wallet.setBalance(0);
             order.setState(Order.State.DONE);
             logger.info(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
-                Transaction.DATE_FORMAT.format(database_.getTransactions().get(x).getDate()), numberBitCoinsToBuy,
+                Ticker.DATE_FORMAT.format(database_.getTransactions().get(x).getDate()), numberBitCoinsToBuy,
                 currentPrice, IConfiguration.FEE_PERCENTAGE));
         }
         return order;
@@ -67,21 +68,16 @@ public class ExchangeSimulator implements IExchange {
             bitCoins = 0;
             order.setState(Order.State.DONE);
             logger.info(String.format("%s SELL %6.2f BitCoins @ EUR%.2f each, wallet=EUR%.2f",
-                Transaction.DATE_FORMAT.format(database_.getTransactions().get(x).getDate()), numberBitCoinsToSell,
+                Ticker.DATE_FORMAT.format(database_.getTransactions().get(x).getDate()), numberBitCoinsToSell,
                 currentPrice, wallet.getBalance()));
         }
         return order;
     }
 
     @Override
-    public Order getCurrentOrder() {
-        return new NoOrder();
-    }
-
-    @Override
-    public Order cancelOrder(Order order) {
+	public boolean cancelOrder(Order order) {
         logger.debug("Cancell order " + order);
-        return new NoOrder();
+		return true;
     }
 
     @Override
@@ -93,7 +89,7 @@ public class ExchangeSimulator implements IExchange {
     public Order placeBuyOrder(MarketOrder order) {
         logger.info("Put buy order " + order);
         // immediate transaction
-        wallet.withdraw(getTicker().getPrice() + (IConfiguration.FEE_PERCENTAGE * getTicker().getPrice()));
+		wallet.withdraw(getTicker().getPrice() + (IConfiguration.FEE_PERCENTAGE * getTicker().getPrice()));
         order.setState(Order.State.DONE);
         return order;
     }
@@ -102,8 +98,14 @@ public class ExchangeSimulator implements IExchange {
     public Order placeSellOrder(MarketOrder order) {
         logger.info("Put sell order " + order);
         // immediate transaction
-        wallet.deposit(getTicker().getPrice());
+		wallet.deposit(getTicker().getPrice());
         order.setState(Order.State.DONE);
         return order;
     }
+
+	@Override
+	public Order getCurrentOrder() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
