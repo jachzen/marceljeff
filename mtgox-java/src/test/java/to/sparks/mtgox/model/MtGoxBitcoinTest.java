@@ -5,9 +5,14 @@
 package to.sparks.mtgox.model;
 
 import java.math.BigDecimal;
+
 import junit.framework.TestCase;
-import static org.junit.Assert.assertTrue;
-import org.junit.*;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -27,10 +32,12 @@ public class MtGoxBitcoinTest extends TestCase {
     public static void tearDownClass() throws Exception {
     }
 
+    @Override
     @Before
     public void setUp() {
     }
 
+    @Override
     @After
     public void tearDown() {
     }
