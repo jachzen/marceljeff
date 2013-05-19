@@ -6,7 +6,7 @@
 public interface IExchange {
 
     /**
-     * Returns the latest transaction.
+     * Returns the latest ticker.
      */
 	Ticker getTicker();
 

@@ -14,7 +14,6 @@ public class ExchangeSimulator implements IExchange {
 
     private int x = 0;
     private final Wallet wallet = new Wallet(IConfiguration.BALANCE);
-    private double bitCoins = 0;
     private final Database database_;
 
     /**
@@ -26,32 +25,36 @@ public class ExchangeSimulator implements IExchange {
 
     @Override
 	public Ticker getTicker() {
-		Ticker t = database_.getTransactions().get(x);
+		Ticker t = database_.getTickers().get(x);
 		return t;
     }
 
+    public Ticker getLastTicker() {
+        return database_.getTickers().get(database_.getTickers().size() - 1);
+    }
+
     /**
-     * Increments to the next transaction.
+     * Increments to the next ticker.
      *
-     * @return true if there are more transactions in the database; false
+     * @return true if there are more tickers in the database; false
      *         otherwise.
      */
     public boolean increment() {
-        return ++x < database_.getTransactions().size();
+        return ++x < database_.getTickers().size();
     }
 
     @Override
     public Order placeBuyOrder(NormalOrder order) {
         if (wallet.getBalance() > 0) {
-            // immediate transaction
-            double currentPrice = database_.getTransactions().get(x).getPrice();
+            // immediate ticker
+            double currentPrice = database_.getTickers().get(x).getPrice();
             double commissionPrice = currentPrice * (1 + IConfiguration.FEE_PERCENTAGE / 100);
             double numberBitCoinsToBuy = wallet.getBalance() / commissionPrice;
-            bitCoins += numberBitCoinsToBuy;
+            wallet.setBitCoins(numberBitCoinsToBuy);
             wallet.setBalance(0);
             order.setState(Order.State.DONE);
-            logger.info(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
-                Ticker.DATE_FORMAT.format(database_.getTransactions().get(x).getDate()), numberBitCoinsToBuy,
+            logger.debug(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
+                Ticker.DATE_FORMAT.format(database_.getTickers().get(x).getDate()), numberBitCoinsToBuy,
                 currentPrice, IConfiguration.FEE_PERCENTAGE));
         }
         return order;
@@ -59,24 +62,29 @@ public class ExchangeSimulator implements IExchange {
 
     @Override
     public Order placeSellOrder(NormalOrder order) {
-        if (bitCoins > 0) {
-            // immediate transaction
-            double currentPrice = database_.getTransactions().get(x).getPrice();
+        if (wallet.getBitCoins() > 0) {
+            // immediate ticker
+            double currentPrice = database_.getTickers().get(x).getPrice();
             double commissionPrice = currentPrice;
-            double numberBitCoinsToSell = bitCoins;
-            wallet.deposit(numberBitCoinsToSell * commissionPrice);
-            bitCoins = 0;
+            double numberBitCoinsToSell = wallet.getBitCoins();
+            wallet.setBalance(numberBitCoinsToSell * commissionPrice);
+            wallet.setBitCoins(0);
             order.setState(Order.State.DONE);
-            logger.info(String.format("%s SELL %6.2f BitCoins @ EUR%.2f each, wallet=EUR%.2f",
-                Ticker.DATE_FORMAT.format(database_.getTransactions().get(x).getDate()), numberBitCoinsToSell,
+            logger.debug(String.format("%s SELL %6.2f BitCoins @ EUR%.2f each, wallet=EUR%.2f",
+                Ticker.DATE_FORMAT.format(database_.getTickers().get(x).getDate()), numberBitCoinsToSell,
                 currentPrice, wallet.getBalance()));
         }
         return order;
     }
 
     @Override
+    public Order getCurrentOrder() {
+        return new NoOrder();
+    }
+
+    @Override
 	public boolean cancelOrder(Order order) {
-        logger.debug("Cancell order " + order);
+        logger.debug("Cancel order " + order);
 		return true;
     }
 
@@ -88,8 +96,8 @@ public class ExchangeSimulator implements IExchange {
     @Override
     public Order placeBuyOrder(MarketOrder order) {
         logger.info("Put buy order " + order);
-        // immediate transaction
-		wallet.withdraw(getTicker().getPrice() + (IConfiguration.FEE_PERCENTAGE * getTicker().getPrice()));
+        // immediate ticker
+        wallet.withdraw(getTicker().getPrice() + (IConfiguration.FEE_PERCENTAGE * getTicker().getPrice()));
         order.setState(Order.State.DONE);
         return order;
     }
@@ -97,15 +105,9 @@ public class ExchangeSimulator implements IExchange {
     @Override
     public Order placeSellOrder(MarketOrder order) {
         logger.info("Put sell order " + order);
-        // immediate transaction
-		wallet.deposit(getTicker().getPrice());
+        // immediate ticker
+        wallet.deposit(getTicker().getPrice());
         order.setState(Order.State.DONE);
         return order;
     }
-
-	@Override
-	public Order getCurrentOrder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

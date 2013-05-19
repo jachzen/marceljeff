@@ -1,6 +1,9 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
@@ -8,40 +11,45 @@ public class Simulate {
     private final static Logger logger = Logger.getLogger(Engine.class.getName());
 
     public static void main(String[] args) {
-        Database database = new Database();
+        Locale.setDefault(Locale.US);
         try {
+            logger.info("Starting simulation");
+
+            /* Read in the historical database for which the genome is to be
+             * optimized. */
+            Database database = new Database();
             for (String file : IConfiguration.DATABASES) {
-                logger.info(String.format("Loading database from: \"%s\"", file));
+                logger.info(String.format("Loading database from: \"%s\"...", file));
                 int lineCount = database.addDatabaseFile(new File(file));
-                logger.info(String.format("(%d lines)", lineCount));
+                logger.info(String.format("...done (%d lines)", lineCount));
             }
 
-            logger.info(String.format("Constructing exchange class: \"%s\"",
- IConfiguration.EXCHANGE_SIM_CLASS.getSimpleName()));
-			IExchange exchange = (IExchange) IConfiguration.EXCHANGE_SIM_CLASS.getConstructor(Database.class).newInstance(
-                database);
+            /* Tell the algorithm what exchange to use. */
+            logger.info(String.format("Using exchange %s", IConfiguration.EXCHANGE_CLASS.getSimpleName()));
+            Method setExchangeFactory = IConfiguration.ALGORITHM_CLASS.getMethod("setExchangeFactory",
+                java.lang.Class.class, Database.class);
+            setExchangeFactory.invoke(null, IConfiguration.EXCHANGE_CLASS, database);
 
-            logger.info(String.format("Constructing algorithm class: \"%s\"",
- IConfiguration.EXCHANGE_SIM_CLASS.getSimpleName()));
-            IAlgorithm algorithm = (IAlgorithm) IConfiguration.ALGORITHM_CLASS.getConstructor().newInstance();
-            if (IConfiguration.ALGORITHM_OUTPUT != null) {
-                try {
-                    FileWriter writer = new FileWriter(new File(IConfiguration.ALGORITHM_OUTPUT));
-                    algorithm.setDebugFile(writer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            /* Construct the engine. */
+            // logger.info(String.format("Using engine %s",
+            // IConfiguration.EXCHANGE_CLASS.getSimpleName()));
+            // IEngine engine = (IEngine)
+            // IConfiguration.ENGINE_CLASS.getConstructor().newInstance();
 
-            logger.info(String.format("Constructing engine class: \"%s\"",
- IConfiguration.EXCHANGE_SIM_CLASS.getSimpleName()));
-			logger.info(String.format("Constructing engine class: \"%s\"", IConfiguration.EXCHANGE_REAL_CLASS.getSimpleName()));
-			final IEngine engine = (IEngine) IConfiguration.ENGINE_CLASS.getConstructor(IConfiguration.EXCHANGE_SIM_CLASS, IConfiguration.ALGORITHM_CLASS).newInstance(exchange, algorithm);
+            /* Load genome. */
+            logger.info(String.format("Loading genome %s", IConfiguration.GENOME));
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(IConfiguration.GENOME));
+            BitCoinGenome genome = (BitCoinGenome) in.readObject();
+            in.close();
+            logger.info("Genome: " + genome.toString());
 
-            logger.info("Runnng engine...");
-			engine.run();
+            /* Simulate and output results. */
+            logger.info(String.format("Simulating and outputting into %s", IConfiguration.SIMULATION_RESULTS));
+            FileWriter writer = new FileWriter(new File(IConfiguration.SIMULATION_RESULTS));
+            genome.simulate(writer);
+            writer.close();
 
-            logger.info("...done");
+            logger.info("done");
 
         } catch (Exception e) {
             e.printStackTrace();

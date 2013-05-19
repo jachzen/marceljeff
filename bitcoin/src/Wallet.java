@@ -6,9 +6,11 @@
  */
 public class Wallet {
     private double balance;
+    private double bitCoins;
 
     public Wallet(double balance) {
         this.balance = balance;
+        this.bitCoins = 0;
     }
 
     public double getBalance() {
@@ -17,6 +19,14 @@ public class Wallet {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public double getBitCoins() {
+        return bitCoins;
+    }
+
+    public void setBitCoins(double bitCoins) {
+        this.bitCoins = bitCoins;
     }
 
     public double deposit(double amount) {
