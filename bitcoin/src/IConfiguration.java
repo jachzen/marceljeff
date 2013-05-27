@@ -8,7 +8,6 @@ public interface IConfiguration {
     public static final String[] DATABASES = { "./data/mtgoxEUR-ab20Apr.csv" };
     public static Class<?> EXCHANGE_CLASS = ExchangeSimulator.class;
     public static String SIMULATION_RESULTS = "./genomes/simulationResults.csv";
-    public static boolean START_WITH_BITCOINS = true;
 
     /* Set this to a file if you want the algorithm to output debug stuff to a
      * file. */
@@ -16,7 +15,7 @@ public interface IConfiguration {
 
     /* Genetic optimization control. */
     public static Class<?> ALGORITHM_CLASS = BitCoinGenome1.class;
-    public static final int MAX_ALLOWED_EVOLUTIONS = 53;
+    public static final int MAX_ALLOWED_EVOLUTIONS = 54;
     public static final double CROSSOVER_RATE = 0.35d;
     public static final double MUTATION_RATE = 0.2;
     public static final int POPULATION_SIZE = 100;

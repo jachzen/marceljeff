@@ -1,6 +1,7 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +34,7 @@ public abstract class BitCoinGenome extends Genome {
     /**
      * Processes a ticker, returning the order suggestion.
      */
-    public abstract OrderType addTicker(Ticker ticker) throws IOException;
+    public abstract OrderType addTicker(Ticker ticker, ArrayList<Double> debugData) throws IOException;
 
     @Override
     public double getRealFitness() {
@@ -42,9 +43,6 @@ public abstract class BitCoinGenome extends Genome {
 
         try {
             IExchange exchange = exchangeClass_.getConstructor(Database.class).newInstance(database_);
-            if (IConfiguration.START_WITH_BITCOINS) {
-                exchange.placeBuyOrder(new NormalOrder());
-            }
 
             resetProcessing(exchange.getTicker());
 
@@ -55,7 +53,7 @@ public abstract class BitCoinGenome extends Genome {
                     break;
                 }
                 ticker = exchange.getTicker();
-                OrderType intend = addTicker(ticker);
+                OrderType intend = addTicker(ticker, null);
                 switch (intend) {
                 case BUY:
                     exchange.placeBuyOrder(new NormalOrder());
@@ -81,9 +79,6 @@ public abstract class BitCoinGenome extends Genome {
 
         try {
             IExchange exchange = exchangeClass_.getConstructor(Database.class).newInstance(database_);
-            if (IConfiguration.START_WITH_BITCOINS) {
-                exchange.placeBuyOrder(new NormalOrder());
-            }
 
             resetProcessing(exchange.getTicker());
 
@@ -93,7 +88,8 @@ public abstract class BitCoinGenome extends Genome {
                 if (!((ExchangeSimulator) exchange).increment()) {
                     break;
                 }
-                OrderType intend = addTicker(exchange.getTicker());
+                ArrayList<Double> debugData = new ArrayList<Double>();
+                OrderType intend = addTicker(exchange.getTicker(), debugData);
                 switch (intend) {
                 case BUY:
                     exchange.placeBuyOrder(new NormalOrder());
@@ -104,11 +100,18 @@ public abstract class BitCoinGenome extends Genome {
                 case DO_NOTHING:
                     break;
                 }
-                if (minuteCount++ % (24 * 60 / 240) == 0) {
+                final int OUTPUTS_PER_DAY = 24;
+                if (minuteCount++ % (24 * 60 / OUTPUTS_PER_DAY) == 0) {
                     double depot = exchange.getWallet().getBalance() + exchange.getWallet().getBitCoins()
                         * exchange.getTicker().getPrice();
-                    writer.write(String.format("%s,%f,%f\n", new SimpleDateFormat("dd.MM.yyyy").format(exchange
-                        .getTicker().getDate()), exchange.getTicker().getPrice(), depot));
+                    writer.write(String.format("%s",
+                        new SimpleDateFormat("dd.MM.yyyy").format(exchange.getTicker().getDate())));
+                    writer.write(String.format(",%f", exchange.getTicker().getPrice()));
+                    writer.write(String.format(",%f", depot));
+                    for (Double d : debugData) {
+                        writer.write(String.format(",%f", d));
+                    }
+                    writer.write("\n");
                 }
             }
 

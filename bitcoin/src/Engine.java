@@ -17,7 +17,7 @@ public class Engine implements IEngine {
         OrderType intend;
 
         try {
-            intend = genome.addTicker(lastTicker);
+            intend = genome.addTicker(lastTicker, null);
         } catch (IOException e) {
             return;
         }
