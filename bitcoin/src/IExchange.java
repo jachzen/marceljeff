@@ -53,4 +53,11 @@ public interface IExchange {
      */
     Wallet getWallet();
 
+	/**
+	 * Get the state of an order
+	 * @return
+	 * @throws Exception 
+	 */
+	Order.State getOrderResult(NormalOrder order);
+
 }

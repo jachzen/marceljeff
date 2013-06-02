@@ -26,7 +26,8 @@ public interface IConfiguration {
     /* Genome to use for simulation and live trading. */
     public static final String GENOME = "./genomes/BitCoinGenome2_10-minute-transactions.ser";
 
+
     // TODO configure
-    public static double BALANCE = 100;
+	public static double BALANCE = 100;
     public static double FEE_PERCENTAGE = 0.6;
 }

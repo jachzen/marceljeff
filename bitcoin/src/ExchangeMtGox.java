@@ -13,6 +13,7 @@ import to.sparks.mtgox.model.CurrencyInfo;
 import to.sparks.mtgox.model.Lag;
 import to.sparks.mtgox.model.MtGoxBitcoin;
 import to.sparks.mtgox.model.MtGoxFiatCurrency;
+import to.sparks.mtgox.model.OrderResult;
 
 public class ExchangeMtGox implements IExchange {
 
@@ -41,7 +42,6 @@ public class ExchangeMtGox implements IExchange {
 	}
 
     @Override
-	//TODO support more than 1 order?!
 	public Order getCurrentOrder() {
 		to.sparks.mtgox.model.Order[] openOrders;
 		try {
@@ -78,12 +78,16 @@ public class ExchangeMtGox implements IExchange {
 		try {
 			@SuppressWarnings("unused")
 			HashMap<String, to.sparks.mtgox.model.Wallet> wallets = mtgoxEUR.getAccountInfo().getWallets();
-		} catch (Exception e) {
+
+			to.sparks.mtgox.model.Wallet theirWallet = wallets.get("mtgoxEUR");
+			//TODO get amounts of bitcoins from somewhere...
+			Wallet ourWallet = new Wallet(theirWallet.getBalance().doubleValue());
+			//ourWallet.setBitCoins( mtgoxEUR.getAccountInfo();
+		}catch (Exception e) {
 			logger.error("GetWallets failed", e);
 			return null;
 		}
-		//TODO check what wallets are
-		//wallets.get("").
+
 		return null;
 	}
 
@@ -156,6 +160,21 @@ public class ExchangeMtGox implements IExchange {
 			// Do s.th. more effective?!
 		}
 		return null;
+	}
+
+	@Override
+	public Order.State getOrderResult(NormalOrder order) {
+		to.sparks.mtgox.MtGoxHTTPClient.OrderType orderTypeMtGox = (order.getOrderType() == OrderType.BUY)? (to.sparks.mtgox.MtGoxHTTPClient.OrderType.Bid) : (to.sparks.mtgox.MtGoxHTTPClient.OrderType.Ask);
+		OrderResult result;
+		try {
+			result = mtgoxEUR.getOrderResult(orderTypeMtGox, order.getReference());
+		} catch (Exception e) {
+			return Order.State.OPEN;
+		}
+		if (result.getTotalAmount().getPriceValueInt() == order.getVolume() * order.getPrice())
+			return Order.State.DONE;
+		else
+			return Order.State.PENDING;
 	}
 
 }

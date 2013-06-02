@@ -53,7 +53,7 @@ public class ExchangeSimulator implements IExchange {
             wallet.setBitCoins(numberBitCoinsToBuy);
             wallet.setBalance(0);
             order.setState(Order.State.DONE);
-            logger.debug(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
+			logger.error(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
                 Ticker.DATE_FORMAT.format(database_.getTickers().get(x).getDate()), numberBitCoinsToBuy,
                 currentPrice, IConfiguration.FEE_PERCENTAGE));
         }
@@ -110,4 +110,10 @@ public class ExchangeSimulator implements IExchange {
         order.setState(Order.State.DONE);
         return order;
     }
+
+	@Override
+	public Order.State getOrderResult(NormalOrder order) {
+		// TODO Auto-generated method stub
+		return Order.State.DONE;
+	}
 }

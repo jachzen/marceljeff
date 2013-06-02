@@ -39,6 +39,10 @@ public class Wallet {
         return balance;
     }
 
+	public double getBalanceBitcoins(double exchangeRate) {
+		return exchangeRate * balance;
+	}
+
     @Override
     public String toString() {
         return "{balance=" + balance + "}";
