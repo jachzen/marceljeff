@@ -32,20 +32,6 @@ public class Engine implements IEngine {
             return;
         }
 
-		//		if (!(pendingOrder instanceof NoOrder) && exchange.getOrderResult(pendingOrder) == Order.State.DONE) {
-		//			lastExecutedOrder = pendingOrder;
-		//			//TODO change object inside of get orderresult
-		//			lastExecutedOrder.setState(Order.State.DONE);
-		//			if (lastExecutedOrder.getOrderType() == OrderType.BUY)
-		//				engineWallet.withdraw(lastExecutedOrder.getVolume());
-		//			if (lastExecutedOrder.getOrderType() == OrderType.SELL)
-		//				engineWallet.deposit(lastExecutedOrder.getVolume());
-		//
-		//			pendingOrder = new NoOrder();
-		//		}
-
-		//pendingOrder = exchange.getCurrentOrder();
-
 		NormalOrder order = new NormalOrder();
 		Wallet wallet = exchange.getWallet();
 		

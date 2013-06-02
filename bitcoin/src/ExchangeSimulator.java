@@ -53,7 +53,7 @@ public class ExchangeSimulator implements IExchange {
             wallet.setBitCoins(numberBitCoinsToBuy);
             wallet.setBalance(0);
             order.setState(Order.State.DONE);
-			logger.error(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
+			logger.debug(String.format("%s BUY  %6.2f BitCoins @ EUR%.2f each (+%.1f%% commission)",
                 Ticker.DATE_FORMAT.format(database_.getTickers().get(x).getDate()), numberBitCoinsToBuy,
                 currentPrice, IConfiguration.FEE_PERCENTAGE));
         }
