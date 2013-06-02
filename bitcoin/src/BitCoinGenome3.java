@@ -15,10 +15,10 @@ public class BitCoinGenome3 extends BitCoinGenome {
         genes_ = new ArrayList<Gene>();
 
         /* x, where 10^x = half-life TEMA in minutes. */
-        genes_.add(DoubleGene.getNewInstance(0, 4, 1));
+        genes_.add(DoubleGene.getNewInstance(2.5, 3.5, 0.2)); // [316,3160]
 
         /* x, where 10^x = stop-loss/buy proportion of price. */
-        genes_.add(DoubleGene.getNewInstance(-4, -1, 1));
+        genes_.add(DoubleGene.getNewInstance(-2.5, -1.5, 0.2)); // [0.00316,0.0316]
     }
 
     /**
@@ -123,7 +123,7 @@ public class BitCoinGenome3 extends BitCoinGenome {
 
     @Override
     public String toString() {
-        return String.format("{tema=%.2f stop=%.4f}", getHlTema(), getStop());
+        return String.format("{tema=%.0f stop=%.4f}", getHlTema(), getStop());
     }
 
     /* Used to increase efficiency by calculating only once. */

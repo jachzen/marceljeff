@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * We can have diffrent engine types
  * 1. Marketorder Engine (directly sell/buy at marketprice)
@@ -6,5 +8,5 @@
  *
  */
 public interface IEngine {
-	void run();
+	void run(ArrayList<Double> debugData);
 }

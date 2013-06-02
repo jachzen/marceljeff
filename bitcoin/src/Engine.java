@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Engine implements IEngine {
     // private final Logger logger = Logger.getLogger(Engine.class.getName());
@@ -12,12 +13,12 @@ public class Engine implements IEngine {
     }
 
     @Override
-    public void run() {
+    public void run(ArrayList<Double> debugData) {
         Ticker lastTicker = exchange.getTicker();
         OrderType intend;
 
         try {
-            intend = genome.addTicker(lastTicker, null);
+            intend = genome.addTicker(lastTicker, debugData);
         } catch (IOException e) {
             return;
         }

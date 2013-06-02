@@ -44,6 +44,12 @@ public class Optimize {
             java.lang.Class.class, Database.class);
         setExchangeFactory.invoke(null, IConfiguration.EXCHANGE_CLASS, database);
 
+        /* Tell the algorithm what engine to use. */
+        logger.info(String.format("Using engine %s", IConfiguration.ENGINE_CLASS.getSimpleName()));
+        Method setEngineFactory = IConfiguration.ALGORITHM_CLASS.getMethod("setEngineFactory",
+            java.lang.Class.class);
+        setEngineFactory.invoke(null, IConfiguration.ENGINE_CLASS);
+
         /* Run the optimization loop, printing out the fittest genome each
          * generation. */
         logger.info("Starting optimization");

@@ -26,6 +26,13 @@ public abstract class BitCoinGenome extends Genome {
     }
 
     /**
+     * Set the engine to use.
+     */
+    public static void setEngineFactory(Class<IEngine> engineClass) {
+        engineClass_ = engineClass;
+    }
+
+    /**
      * Resets processing of database. Call this each time before the first call
      * to run().
      */
@@ -38,31 +45,48 @@ public abstract class BitCoinGenome extends Genome {
 
     @Override
     public double getRealFitness() {
+        return simulate(null);
+    }
+
+    public double simulate(FileWriter writer) {
 
         double depot = 0; // default
 
         try {
             IExchange exchange = exchangeClass_.getConstructor(Database.class).newInstance(database_);
+            IEngine engine = engineClass_.getConstructor(IExchange.class, BitCoinGenome.class).newInstance(exchange,
+                this);
 
             resetProcessing(exchange.getTicker());
 
+            long minuteCount = 0;
             Ticker ticker = null;
             for (;;) {
-                // TODO Jeff: Call Marcel's Engine here.
+                /* When simulating (or optimizing), we know that the exchange
+                 * must be a simulator, and each pass through the simulation
+                 * loop the exchange must be incremented. */
                 if (!((ExchangeSimulator) exchange).increment()) {
                     break;
                 }
+
+                /* Get the current ticker. */
                 ticker = exchange.getTicker();
-                OrderType intend = addTicker(ticker, null);
-                switch (intend) {
-                case BUY:
-                    exchange.placeBuyOrder(new NormalOrder());
-                    break;
-                case SELL:
-                    exchange.placeSellOrder(new NormalOrder());
-                    break;
-                case DO_NOTHING:
-                    break;
+
+                /* Run the engine. */
+                ArrayList<Double> debugData = new ArrayList<Double>();
+                engine.run(debugData);
+
+                final int OUTPUTS_PER_DAY = 24;
+                if (writer != null && minuteCount++ % (24 * 60 / OUTPUTS_PER_DAY) == 0) {
+                    double intermediateDepot = exchange.getWallet().getBalance() + exchange.getWallet().getBitCoins()
+                        * ticker.getPrice();
+                    writer.write(String.format("%s", new SimpleDateFormat("dd.MM.yyyy").format(ticker.getDate())));
+                    writer.write(String.format(",%f", ticker.getPrice()));
+                    writer.write(String.format(",%f", intermediateDepot));
+                    for (Double d : debugData) {
+                        writer.write(String.format(",%f", d));
+                    }
+                    writer.write("\n");
                 }
             }
 
@@ -72,54 +96,11 @@ public abstract class BitCoinGenome extends Genome {
         } catch (Exception e) {
             logger.error("", e);
         }
+
         return depot;
-    }
-
-    public void simulate(FileWriter writer) {
-
-        try {
-            IExchange exchange = exchangeClass_.getConstructor(Database.class).newInstance(database_);
-
-            resetProcessing(exchange.getTicker());
-
-            long minuteCount = 0;
-            for (;;) {
-                // TODO Jeff: Call Marcel's Engine here.
-                if (!((ExchangeSimulator) exchange).increment()) {
-                    break;
-                }
-                ArrayList<Double> debugData = new ArrayList<Double>();
-                OrderType intend = addTicker(exchange.getTicker(), debugData);
-                switch (intend) {
-                case BUY:
-                    exchange.placeBuyOrder(new NormalOrder());
-                    break;
-                case SELL:
-                    exchange.placeSellOrder(new NormalOrder());
-                    break;
-                case DO_NOTHING:
-                    break;
-                }
-                final int OUTPUTS_PER_DAY = 24;
-                if (minuteCount++ % (24 * 60 / OUTPUTS_PER_DAY) == 0) {
-                    double depot = exchange.getWallet().getBalance() + exchange.getWallet().getBitCoins()
-                        * exchange.getTicker().getPrice();
-                    writer.write(String.format("%s",
-                        new SimpleDateFormat("dd.MM.yyyy").format(exchange.getTicker().getDate())));
-                    writer.write(String.format(",%f", exchange.getTicker().getPrice()));
-                    writer.write(String.format(",%f", depot));
-                    for (Double d : debugData) {
-                        writer.write(String.format(",%f", d));
-                    }
-                    writer.write("\n");
-                }
-            }
-
-        } catch (Exception e) {
-            logger.error("", e);
-        }
     }
 
     private static Class<IExchange> exchangeClass_;
     private static Database database_;
+    private static Class<IEngine> engineClass_;
 }

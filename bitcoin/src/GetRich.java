@@ -33,7 +33,7 @@ public class GetRich {
 
 				@Override
 				public void run() {
-					engine.run();
+					engine.run(null);
 				}
 			}, 0, IConfiguration.TIMER_PERIOD_SEC, TimeUnit.SECONDS);
 			scheduler.awaitTermination(1000000, TimeUnit.DAYS);

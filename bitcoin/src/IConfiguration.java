@@ -1,7 +1,9 @@
 public interface IConfiguration {
 
-	public static Class<?> EXCHANGE_REAL_CLASS = ExchangeMtGox.class;
-	public static long TIMER_PERIOD_SEC = 60;
+    public static Class<?> EXCHANGE_REAL_CLASS = ExchangeMtGox.class;
+    public static long TIMER_PERIOD_SEC = 60;
+
+    /* Engine to use for optimization, simulation and live trading. */
     public static Class<?> ENGINE_CLASS = Engine.class;
 
     /* For simulation and optimization. */
@@ -15,9 +17,8 @@ public interface IConfiguration {
 
     /* Genetic optimization control. */
     public static Class<?> ALGORITHM_CLASS = BitCoinGenome3.class;
-    public static final int MAX_ALLOWED_EVOLUTIONS = 50;
+    public static final int MAX_ALLOWED_EVOLUTIONS = 51;
     public static final double CROSSOVER_RATE = 0.35d;
-    public static final double MUTATION_RATE = 0.2;
     public static final int POPULATION_SIZE = 100;
     public static final String FITTEST_GENOME = "./genomes/" + ALGORITHM_CLASS.getSimpleName() + "_"
         + MAX_ALLOWED_EVOLUTIONS + ".ser";

@@ -30,11 +30,11 @@ public class Simulate {
                 java.lang.Class.class, Database.class);
             setExchangeFactory.invoke(null, IConfiguration.EXCHANGE_CLASS, database);
 
-            /* Construct the engine. */
-            // logger.info(String.format("Using engine %s",
-            // IConfiguration.EXCHANGE_CLASS.getSimpleName()));
-            // IEngine engine = (IEngine)
-            // IConfiguration.ENGINE_CLASS.getConstructor().newInstance();
+            /* Tell the algorithm what engine to use. */
+            logger.info(String.format("Using engine %s", IConfiguration.ENGINE_CLASS.getSimpleName()));
+            Method setEngineFactory = IConfiguration.ALGORITHM_CLASS.getMethod("setEngineFactory",
+                java.lang.Class.class);
+            setEngineFactory.invoke(null, IConfiguration.ENGINE_CLASS);
 
             /* Load genome. */
             logger.info(String.format("Loading genome %s", IConfiguration.GENOME));
