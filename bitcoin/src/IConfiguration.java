@@ -14,16 +14,16 @@ public interface IConfiguration {
     public static String ALGORITHM_OUTPUT = null; // "./genomes/algorithmOutput.csv";
 
     /* Genetic optimization control. */
-    public static Class<?> ALGORITHM_CLASS = BitCoinGenome2.class;
-    public static final int MAX_ALLOWED_EVOLUTIONS = 2;
+    public static Class<?> ALGORITHM_CLASS = BitCoinGenome3.class;
+    public static final int MAX_ALLOWED_EVOLUTIONS = 50;
     public static final double CROSSOVER_RATE = 0.35d;
     public static final double MUTATION_RATE = 0.2;
-    public static final int POPULATION_SIZE = 2;
+    public static final int POPULATION_SIZE = 100;
     public static final String FITTEST_GENOME = "./genomes/" + ALGORITHM_CLASS.getSimpleName() + "_"
         + MAX_ALLOWED_EVOLUTIONS + ".ser";
 
     /* Genome to use for simulation and live trading. */
-    public static final String GENOME = "./genomes/BitCoinGenome2_2.ser";
+    public static final String GENOME = "./genomes/BitCoinGenome2_10-minute-transactions.ser";
 
     // TODO configure
     public static double BALANCE = 100;
